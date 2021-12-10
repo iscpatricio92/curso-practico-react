@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import '@styles/ProductItem.scss';
-import addToCart from '@icons/bt_add_to_cart.svg';
+import AppContext from '@context/AppContext';
+import addToCartImage from '@icons/bt_add_to_cart.svg';
+import iconClose from '@icons/icon_close.png';
 
-const ProductItem = ({product}) => {
-	const [cart, setCart] = useState([]);
+const ProductItem = ({ product }) => {
+	const { addToCart, removeFromCart } = useContext(AppContext);
+	const [addedToCart, setAddedToCart] = useState(false);
 
-	const handleClick = () => {
-		setCart([]);
+	const handleAdd = item => {
+		addToCart(item);
+		setAddedToCart(true);
+	}
+	const handleRemove = item => {
+		removeFromCart(item);
+		setAddedToCart(false);
+	}
+
+	const handleClick = item => {
+		addToCart(item)
 	}
 
 	return (
@@ -17,9 +29,15 @@ const ProductItem = ({product}) => {
 					<p>${product.price}</p>
 					<p>{product.title}</p>
 				</div>
-				<figure onClick={handleClick} >
-					<img src={addToCart} alt="" />
-				</figure>
+				{!addedToCart ?
+					<figure onClick={() => handleAdd(product)} >
+						<img src={addToCartImage} alt="" />
+					</figure>
+					:
+					<figure onClick={() => handleRemove(product)} >
+						<img src={iconClose} alt="" />
+					</figure>
+				}
 			</div>
 		</div>
 	);
